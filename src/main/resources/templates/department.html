@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:include="./include/Head.html"></th:block>
+<style type="text/css">
+	.fieldError{color: red;}
+    </style>
+<script type="text/javascript">
+
+function del() {
+	var msg = "您真的確定要刪除嗎？\n\n請確認！";
+	if (confirm(msg)==true){
+	  return true;
+	}else{
+	  return false;
+	 }
+	}
+
+
+function disp_confirm()
+{
+var r=confirm("是否要重置")
+if (r==true)
+  {
+	alert("成功重置!!")
+  }
+else
+  {
+	alert("取消重置!!")
+	return false;
+  }
+}
+
+</script>   
+<title>Department 管理</title>
+</head>
+<body>
+ <div class="container my-2">
+  <div th:include="./include/header.html"></div>
+  <h1>Department 管理</h1>
+  <form action="#"
+         th:action="@{/department/}"
+         th:Object="${department}"
+         th:method="${_method}">
+  <div class="form_group">
+   <input type="hidden" th:field="*{id}">       
+   <label for="name">部門名稱</label>
+   <span class="fieldError" th:if="${#fields.hasErrors('*{name}')}" th:errors="*{name}"></span>
+   <input type="text"  th:field ="*{name}" class="form-control">
+   
+   <label for="director">主管名稱</label>
+   <input type="text"  th:field ="*{director}" class="form-control">
+  </div>
+  <br />
+  <input type="submit" th:value="${buttonName}" class="btn btn-primary" />
+  <input type="reset" onclick="javascript:return disp_confirm()"  value="重置" class="btn btn-danger">
+  </form>
+  <p />
+		<h1>部門列表</h1>
+		<table border="1" class="table table-striped table-responsive-md">
+        <thead>
+         <tr>
+           <th>序號</th>
+           <th>名稱</th>
+           <th>主管</th>
+           <th>員工</th>
+           <th>修改</th>
+           <th>刪除</th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr th:each = "department : ${departments}">
+           <td th:text="${department.id}"></td>
+           <td th:text="${department.name}"></td>
+           <td th:text="${department.director}"></td>
+           
+           <td>
+					<span th:each="emp:${department.employees}">
+					<a th:href="@{/employee/{id}(id=${emp.id})}" th:text="${emp.name}" />
+					&nbsp;
+				</span>
+			</td>
+           
+           <td>
+             <a th:href="@{/department/{id}(id=${department.id})}">修改</a>
+           </td>
+           <td>
+             <a 
+                th:if="${#lists.size(department.employees)==0}"
+                th:href="@{/department/delete/{id}(id=${department.id})}" onclick="javascript:return del()">
+                刪除
+             </a>
+             <div th:if="${#lists.size(department.employees)!=0}">
+			 無法刪除(尚有員工)
+	         </div>  
+           </td>
+         </tr>
+        </tbody>
+        </table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:include="./include/Head.html"></th:block>
+<style type="text/css">
+		.img-responsive {
+		  display: block;
+		  max-width: 20%;
+		  max-height: 20%;
+		}
+	</style>
+<title>上傳圖片</title>	
+    <body style="padding: 20px">
+        <div th:include="./include/header.html"></div>
+        <form class="container my-2" 
+              enctype="multipart/form-data"
+              th:method="post"
+              th:action="@{/upload/}">
+            <fieldset>
+                <legend>Upload 圖片 (表單編碼:multipart/form-data)</legend>
+                
+                <input type="text" name="cname" placeholder="圖片名稱" value="" class="pure-input-rounded"><p /> 
+                <p />
+                <input type="file" name="upload_file" />
+                <p />
+                <button type="submit" class="pure-button pure-button-primary">上傳</button>
+            </fieldset>
+        </form>
+        <table border="1" class="table table-striped table-responsive-md">
+         <thead>
+          <tr>
+           <th>名稱</th>
+           <th>圖片</th>
+          </tr>
+         </thead>
+         <tbody>
+           <tr th:each=" image :${images}">
+            <td th:text="${image.name}"></td>
+            <td >
+             <img class="img-responsive" th:src="@{/images/{path}(path=${image.path})}">
+            </td>
+           </tr>
+         </tbody>
+        </table>
+    </body>
+</html>

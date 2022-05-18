@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="./include/Head.html"></th:block>
+<style type="text/css">
+	.fieldError{color: red;}
+    </style>
+<meta charset="UTF-8">
+<script type="text/javascript">
+  function disp_confirm(){
+	  var img = confirm('是否重置');
+	  if(img==true){
+		  alert("確認重置");
+		  return true;
+	  }else{
+		  return false; 
+	  }
+	}
+  
+  function del(){
+	  var img = confirm('是否刪除');
+	  if(img==true){
+		  alert("確認刪除");
+		  return true;
+	  }else{
+		  return false; 
+	  }
+	}
+  
+</script>
+<title>供應商介面</title>
+</head>
+<body>
+ <div class="container my-2">
+  <div th:include="./include/header.html"></div>
+ <h1>供應商維護</h1>
+ <form   action="#" th:action="@{/supplier/}" th:object="${supplier}" th:method="${_method}" >
+  <div class="form_group">
+    <input type="hidden" th:field="*{id}">
+    <label for="name">名稱</label>
+    <span  class="fieldError" th:if="${#fields.hasErrors('*{name}')}" th:errors="*{name}"></span>
+    <input type="text"  th:field ="*{name}" class="form-control">
+   </div>
+   <br/>
+   <input type="submit" th:value="${buttonName}" class="btn btn-primary" />
+   <input type="reset" onclick="javascript:return disp_confirm()" class="btn btn-danger" value="重置">
+ </form>
+ <p/>
+ <table border="1" class="table table-striped table-responsive-md">
+   <thead>
+     <tr>
+       <th>ID</th>
+       <th>名稱</th>
+       <th>修改</th>
+       <th>刪除</th>     
+     </tr>
+   </thead>
+   <tbody>
+     <tr th:each="supplier : ${suppliers}">
+      <td th:text="${supplier.id}"></td>
+      <td th:text="${supplier.name}"></td>
+      <td>
+       <a th:href="@{/supplier/{id}(id=${supplier.id})}">修改</a>
+      </td>
+      <td>
+       <a th:href="@{/supplier/delete/{id}(id=${supplier.id})}" onclick="javascript:return del()">刪除</a>
+      </td>
+     </tr>
+   </tbody>
+ </table>
+ </div>
+</body>
+</html>
