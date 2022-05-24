@@ -31,12 +31,12 @@ public class Product {
 	
 	@Column
 	@NotNull(message = "{product.cost.notnull}")
-	@Range(min = 10, max = 1000, message = "{product.cost.range}")
+	@Range(min = 0, message = "{product.cost.range}")
 	private Integer cost;
 	
 	@Column
 	@NotNull(message = "{product.price.notnull}")
-	@Range(min = 10, max = 1000, message = "{product.price.range}")
+	@Range(min = 0, message = "{product.price.range}")
 	private Integer price;
 	
 	@Column
@@ -48,7 +48,7 @@ public class Product {
 	
 	@OneToMany(mappedBy = "product")
 	@OrderBy("id ASC")
-	private Set<OrderItem> orderItemrs  = new LinkedHashSet<>();
+	private Set<OrderItem> orderItems  = new LinkedHashSet<>();
 
 	public Long getId() {
 		return id;
@@ -90,12 +90,14 @@ public class Product {
 		this.purchaseItems = purchaseItems;
 	}
 
-	public Set<OrderItem> getOrderItemrs() {
-		return orderItemrs;
+	
+
+	public Set<OrderItem> getOrderItems() {
+		return orderItems;
 	}
 
-	public void setOrderItemrs(Set<OrderItem> orderItemrs) {
-		this.orderItemrs = orderItemrs;
+	public void setOrderItems(Set<OrderItem> orderItems) {
+		this.orderItems = orderItems;
 	}
 
 	public String getRemark() {

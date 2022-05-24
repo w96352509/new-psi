@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:include="./include/Head.html"></th:block>
+<title>員工介面</title>
+<style type="text/css">
+	.fieldError{color: red;}
+</style>
+<script type="text/javascript">
+
+ function res(){
+	 var r = confirm('是否清除表單');
+	 if(r==true){
+		 return true;
+	 }else{
+		 return false;
+	 }
+ }
+
+ function del(){
+	 var r = confirm('是否清除刪除');
+	 if(r==true){
+		 return true;
+	 }else{
+		 return false;
+	 }
+ }
+ 
+</script>
+</head>
+<body>
+ <div class="container my-2">
+  <div th:include="./include/header.html" ></div>
+   <h1>Employee 維護</h1>
+    <form action="#" th:action="@{/employee/}" th:object="${employee}" th:method="${_method}">
+     <div class="form_group">
+      <input type="hidden" th:field="*{id}" />
+      <label for="name">名稱</label>
+      <span class="fieldError" th:if="${#fields.hasErrors('*{name}')}" th:errors="*{name}" ></span>
+      <input type="text" th:field="*{name}" class="form-control">
+      <p/>
+      <label for="extension" >分機</label>
+      <input type="text" th:field="*{extension}" class="form-control" >
+      <p/>
+      <label for="jobTitle">職稱</label>
+      <input type="text" th:field="*{jobTitle}" class="form-control" >
+      <p/>
+      <label for="name">部門</label>
+      <select class="form-control select2"
+						th:field="*{department.id}">
+					<option th:each="d:${departments}" 
+							th:value="${d.id}"
+							th:text="${d.name}"
+							th:selected="(${d.id} eq (*{department.id}?:0))" />
+				</select>
+     </div>
+     <input type="submit" th:value="${buttonName}" class="btn btn-primary" />
+     <input type="reset" onclick="javascript:return res()" class="btn btn-danger">
+    </form>
+    <p/>
+    <h1>Employee 列表</h1>
+    <table border="1" class="table table-striped table-responsive-md">
+			<thead>
+				<tr>
+					<th>序號</th><th>員工姓名</th><th>部門</th>
+					<th>職稱</th><th>分機</th><th>編輯</th><th>刪除</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="employee : ${employees}">
+					<td th:text="${employee.id}"></td>
+					<td th:text="${employee.name}"></td>
+					<td th:if="${employee.department}">
+						<a th:href="@{/department/{id}(id=${employee.department.id})}" th:text="${employee.department.name}" />
+						&nbsp;
+					</td>
+					<td th:unless="${employee.department}">無部門</td>
+					<td th:text="${employee.jobTitle}"></td>
+					<td th:text="${employee.extension}"></td>
+					<td>
+						<a th:href="@{/employee/{id}(id=${employee.id})}">編輯</a>
+					</td>
+					<td>
+					    <span th:if="${#lists.size(employee.purchases)==0 and #lists.size(employee.orders)==0}">
+						<a th:href="@{/employee/delete/{id}(id=${employee.id})}">刪除</a>
+						</span>
+						<span style="color: red" th:if="${#lists.size(employee.purchases)!=0 or #lists.size(employee.orders)!=0}"
+						      th:utext="'採購單:'+
+						                ${#lists.size(employee.purchases)}+
+						                '<p/>'+
+						                '訂購單:'+ 
+						                ${#lists.size(employee.orders)} ">
+						               </span>
+					    
+					</td>
+				</tr>
+			</tbody>
+		</table>
+    
+ </div>
+</body>
+</html>

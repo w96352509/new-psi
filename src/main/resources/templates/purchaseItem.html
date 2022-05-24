@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:include="./include/Head.html"></th:block>
+<title>PurchaseItem 分頁</title>
+</head>
+<body>
+ <div class="container my-2">
+ <div th:include="./include/header.html"></div>
+ <h1>Purchase 主檔資料</h1>
+ <table border="1" class="table table-striped table-responsive-md" >
+  <thead>
+   <tr>
+    <th>採購單主檔序號</th>
+    <th>採購單主檔日期</th>
+    <th>供應商</th>
+    <th>經手人員</th>
+    <th>採購單總細目筆數</th>
+    <th>採購總價(成本)</th>
+   </tr>
+  </thead>
+  <tbody>
+    <tr>
+     <td th:text="${purchase.id}"></td>
+     <td th:text="${purchase.date}"></td>
+     <td th:text="${purchase.supplier.name}"></td>
+     <td th:text="${purchase.employee.name}"></td>
+     <td th:text="${#lists.size(purchase.purchaseItems)}"></td>
+     <td th:text="${purchase.getTotal()}"></td>
+    </tr>
+  </tbody>
+ </table>
+ <br/>
+ <h1>Purchase 明細</h1>
+ <table border="1" class="table table-striped table-responsive-md" >
+  <thead>
+   <tr>
+    <th>流水號</th>
+    <th>明細ID</th>
+    <th>商品ID</th>
+    <th>商品名稱</th>
+    <th>商品成本</th>
+    <th>採購數量</th>
+    <th>小計</th>
+    <th>編輯</th>
+    <th>刪除</th>
+   </tr>
+  </thead>
+  <tbody>
+    <tr th:each="purchaseItem , status : ${purchase.purchaseItems}">
+     <td th:text="${status.index+1}"></td>
+     <td th:text="${purchaseItem.id}"></td>
+     <td th:text="${purchaseItem.product.id}"></td>
+     <td th:text="${purchaseItem.product.name}"></td>
+     <td th:text="${purchaseItem.product.cost}"></td>
+     <td th:text="${purchaseItem.amount}"></td>
+     <td th:text="${purchaseItem.amount * purchaseItem.product.cost}"></td>
+     <td>
+      <a th:href="@{/purchase/{pid}/item/{iid}(pid=${purchase.id},iid=${purchaseItem.id})}">編輯</a>
+     </td>
+     <td>
+      <a th:href="@{/purchase/{pid}/item/delete/{iid}(pid=${purchase.id},iid=${purchaseItem.id})}">刪除</a>
+     </td>
+    </tr>
+  </tbody>
+ </table>
+ <p />
+		<h1>PurchaseItem 資料維護</h1>
+		<form th:action="@{/purchase/{pid}/item(pid=${purchase.id})}"
+			  th:object="${purchaseItem}"
+			  th:method="${_method}">
+			<input type="hidden" id="purchase.id" name="purchase.id" 
+				   th:value="${pid}" class="form-control" />
+			<div class="form-group" th:if="*{id} != null">
+				<label for="purchaseItem.id">採購項目序號：</label>
+				<input type="text" readonly="readonly"
+					   th:field="*{id}" class="form-control">
+			</div>
+			<div class="form-group">
+				<label for="product.id">商品：</label>
+				<select class="form-control select2" th:field="*{product.id}">
+				    <option selected="selected" value="">請選擇</option>
+					<option th:each="p:${products}" th:value="${p.id}" th:text="${p.name} + ' $' + ${p.cost}" />
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="purchaseItem.amount">數量：</label>
+				<input type="number" th:field="*{amount}" class="form-control" />
+			</div>
+			<input type="submit" 
+				   th:value="(*{id} == null ? '新增採購項目' : '修改採購項目')"
+				   class="btn btn-primary">
+			<button type="button" th:onclick="|window.location.href='@{/purchase/{oid}/item(oid=${purchase.id})}'|" class="btn btn-danger">重置</button>	   
+		</form>
+ </div>  
+</body>
+</html>

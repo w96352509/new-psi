@@ -2,6 +2,10 @@ package com.study.springmvc.entity;
 
 import java.util.Date;
 
+import java.util.LinkedHashSet;
+
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -35,11 +41,17 @@ public class Order {
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
+	@NotNull(message = "{order.customer.notnull}")
 	private Customer customer;
 	
 	@ManyToOne
 	@JoinColumn(name = "employee_id")
+	@NotNull(message = "{order.employee.notnull}")
 	private Employee employee;
+	
+	@OneToMany(mappedBy = "order")
+	@OrderBy("id ASC")
+	private Set<OrderItem> orderItems = new LinkedHashSet<>();
 	
 	@Column
 	@Temporal(TemporalType.DATE)
@@ -50,7 +62,17 @@ public class Order {
 	
 	@Column
 	private String remark;
+	
+	
 
+	public Integer getTotal() {
+		if (orderItems != null) {
+			return 0;
+		}
+		return orderItems.stream()
+				         .mapToInt(io->io.getAmount() * io.getProduct().getPrice()).sum();
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -97,6 +119,14 @@ public class Order {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public Set<OrderItem> getOrderItems() {
+		return orderItems;
+	}
+
+	public void setOrderItems(Set<OrderItem> orderItems) {
+		this.orderItems = orderItems;
 	}
 	
 	

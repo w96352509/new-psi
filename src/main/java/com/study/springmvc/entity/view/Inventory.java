@@ -8,4 +8,5 @@ public interface Inventory {
 	Integer getPrice();
 	Integer getAmount1();
 	Integer getAmount2();
+	Integer getmax();
 }

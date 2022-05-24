@@ -41,10 +41,12 @@ public class Purchase {
 	
 	@ManyToOne
 	@JoinColumn(name = "supplier_id")  // 外鍵
+	@NotNull(message = "{purchase.supplier.notnull}")
 	private Supplier supplier;
 	
 	@ManyToOne
 	@JoinColumn(name = "employee_id")  // 外鍵
+	@NotNull(message = "{purchase.employee.notnull}")
 	private Employee employee;
 	
 	// 採購單細目

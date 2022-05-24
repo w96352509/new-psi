@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>orderItem 維護</title>
+<th:block th:include="./include/Head.html"></th:block>
+<style type="text/css">
+	.fieldError{color: red;}
+</style>
+<script type="text/javascript">
+   
+   function disp_confirm(){
+	   var r = confirm('是否重製');
+	   if(r==true){
+		   return true;
+	   }else{
+		   return false;
+	   }
+		   
+   }
+   
+</script>
+</head>
+<body>
+  <div class="container my-2">
+   <div th:include="./include/header.html"></div>
+   <h1>OrderItem主檔</h1>
+   <table border="1" class="table table-striped table-responsive-md">
+    <thead>
+      <tr>
+       <th>訂單主檔序號</th>
+       <th>訂單主檔建單日期</th>
+       <th>訂單主檔預計到貨日期</th>
+       <th>客戶</th>
+       <th>經手員工</th>
+       <th>訂單細目筆數</th>
+       <th>訂購總價</th>
+       <th>備註</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+       <td th:text="${order.id}"></td>
+       <td th:text="${order.date}"></td>
+       <td th:text="${order.ShippingDate}"></td>
+       <td th:text="${order.customer.name}"></td>
+       <td th:text="${order.employee.name}"></td>
+       <td th:text="${#lists.size({order.orderItems})}"></td>
+       <td th:text="${order.getTotal}"></td>
+       <td th:text="${order.remark}"></td>
+      </tr>
+    </tbody>
+   </table>
+   <br/>
+   <h1>OrderItem明細</h1>
+   <table border="1" class="table table-striped table-responsive-md">
+    <thead>
+     <tr>
+      <th>流水序號</th>
+      <th>明細ID</th>
+      <th>商品ID</th>
+      <th>商品名稱</th>
+      <th>商品價格</th>
+      <th>購買數量</th>
+      <th>小計</th>
+      <th>編輯</th>
+      <th>刪除</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr th:each=" item , status : ${order.orderItems}">
+      <td th:text="${ status.index + 1 }" ></td>
+	  <td th:text="${ item.id }" ></td>
+	  <td th:text="${ item.product.id }" ></td>
+	  <td th:text="${ item.product.name }" ></td>
+	  <td th:text="${ item.product.price }" ></td>
+	  <td th:text="${ item.amount }" ></td>
+	  <td th:text="${ item.amount * item.product.price }" ></td>
+	  <td>
+		<a th:href="@{/order/{oid}/item/{iid}(oid=${order.id}, iid=${item.id})}"
+		class="btn btn-success">編輯</a>
+		</td>
+		<td>
+		<a th:href="@{/order/{oid}/item/delete/{iid}(oid=${order.id}, iid=${item.id})}"
+						   class="btn btn-danger">刪除</a>
+		</td>
+     </tr>
+    </tbody>
+   </table>
+   <p/>
+   <h1>OrderItem 資料維護</h1>
+		<form th:action="@{/order/{oid}/item(oid=${order.id})}"
+			  th:object="${orderItem}"
+			  th:method="${_method}">
+			<input type="hidden" id="order.id" name="order.id" 
+				   th:value="${oid}" class="form-control" />
+			<div class="form-group" th:if="*{id} != null">
+				<label for="orderItem.id">訂單項目序號：</label>
+				<input type="text" readonly="readonly"
+					   th:field="*{id}" class="form-control">
+			</div>
+			<div class="form-group">
+				<label for="product.id">商品：</label>
+				<select class="form-control select2" th:field="*{product.id}">
+				    <option selected="selected" value="">請選擇</option>
+					<option th:each="p:${products}" th:value="${p.id}" th:text="${p.name} + ' $' + ${p.price}" />
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="purchaseItem.amount">數量：</label>
+				<input type="number" th:field="*{amount}" class="form-control" />
+			</div>
+			<div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+    			<p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>    
+			</div>
+			<input type="submit" 
+				   th:value="(*{id} == null ? '新增訂單項目' : '修改訂單項目')"
+				   class="btn btn-primary">
+		    <button type="button" th:onclick="|javascript:return disp_confirm(),window.location.href='@{/order/{oid}/item(oid=${order.id})}'|" class="btn btn-danger">重置</button>		   
+		</form>
+   </div>
+</body>
+</html>

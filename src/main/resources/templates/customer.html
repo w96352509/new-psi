@@ -91,13 +91,16 @@ function del() {
 		    <td th:text="${customer.uniformNumbers}"></td>
 		    <td th:text="${customer.address}"></td>
 		    <td>
-		     <a th:href="@{order/?customer_id={cid}(cid=${customer.id})}">下單(未做)</a>
+		     <a th:href="@{/order/?customer_id={cid}(cid=${customer.id})}">下單</a>
 		    </td>
 		    <td>
-		     <a th:href="@{/customer/{id}(id=${customer.id})}">修改</a> 
+		     <a th:href="@{/customer/{id}(id=${customer.id})}">修改</a>
 		    </td>
 		    <td>
+		    <span  th:if="${#lists.size(customer.orders)==0}">
 		     <a th:href="@{/customer/delete/{id}(id=${customer.id})}" onclick="javascript:return del()">刪除</a>
+		    </span>
+		    <span style="color: red;" th:if="${#lists.size(customer.orders)!=0}">尚有訂單不可刪除</span>
 		    </td>
 		   </tr>
 		  </tbody>

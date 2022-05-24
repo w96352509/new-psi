@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>order 頁面</title>
+<th:block th:include="./include/Head.html"></th:block>
+<style type="text/css">
+.fieldError {
+	color: red;
+}
+</style>
+
+<script>
+    
+function disp_confirm()
+  {
+  var r=confirm("是否要重置")
+  if (r==true)
+  {
+	alert("成功重置!!")
+  }
+  else
+  {
+	alert("取消重置!!")
+	return false;
+  }
+}
+    
+</script>
+
+
+
+
+</head>
+<body>
+	<div class="container my-2">
+		<div th:include=./include/header.html></div>
+		<h1>Order 主檔維護</h1>
+		<div
+			th:text="${#dates.format(#dates.createNow() ,'yyyy-MM-dd HH:mm:ss')}"></div>
+		<form action="#" th:action="@{/order/}" th:object="${order}"
+			th:method="${_method}">
+			<div class="form_group">
+				<!-- id 隱藏欄位 -->
+				<input type="hidden" th:field="*{id}" /> 
+				<label for="name">訂單日期：</label>
+				<span class="fieldError" 
+				    th:if="${#fields.hasErrors('*{date}')}"
+					th:errors="*{date}"></span> 
+				
+				<input type="date"
+					th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+					th:field="*{date}" class="form-control" /> 
+					<br /> 
+				
+				<label for="ShippingDate">預計到貨日期:</label> 
+					<input type="date"
+					th:field="*{ShippingDate}"
+					th:value="${#dates.format(#dates.createNow() , 'yyyy-MM-dd')}"
+					class="form-control"> 
+					<br /> 
+				<label for="customer">客戶:</label>
+				<span class="fieldError" th:if="${#fields.hasErrors('*{customer}')}" th:errors="*{customer}"></span>
+				<select th:field="*{customer}" class="form-control">
+					<option selected="selected" value="">請選擇</option>
+					<option th:each=" c : ${customers}" th:value="${c.id}"
+						th:text="${c.name}"></option>
+				</select> 
+				<br /> 
+				<label for="employee">員工:</label>
+				<span class="fieldError" th:if="${#fields.hasErrors('*{employee}')}" th:errors="*{employee}"></span> 
+				<select
+					th:field="*{employee}" class="form-control">
+					<option selected="selected" value="">請選擇</option>
+				    <option th:each=" e :${employees}" th:value="${e.id}"
+						th:text="${e.name}"></option>
+				</select>
+			</div>
+			<br /> 
+		<label for="remark">備註:</label>
+		<textarea th:field="*{remark}" cols="50" rows="5"
+		class="form-control">
+　       輸入你想要寫的內容...
+        </textarea>
+		<br /> 
+		<input type="submit" th:value="${_method}"
+				class="btn btn-primary" /> 
+		
+		<button id="res"
+		        type="button"
+		        th:onclick="|javascript:return disp_confirm(),window.location.href='@{/order/}'|"
+			    class="btn btn-danger">重置</button>
+		</form>
+		<p />
+		<table border="1" class="table table-striped table-responsive-md">
+			<thead>
+				<tr>
+					<th>序號</th>
+					<th>訂單日期</th>
+					<th>預計到貨日期</th>
+					<th>客戶</th>
+					<th>員工</th>
+					<th>備註</th>
+					<th>明細</th>
+					<th>修改</th>
+					<th>刪除</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each=" order : ${orders}">
+					<td th:text="${order.id}"></td>
+					<td th:text="${order.date}"></td>
+					<td th:text="${order.ShippingDate}"></td>
+					<td th:text="${order.customer.name}"></td>
+					<td th:text="${order.employee.name}"></td>
+					<td th:text="${order.remark}"></td>
+					<td><a th:href="@{/order/{oid}/item(oid=${order.id})}">明細</a>
+					</td>
+					<td><a th:href="@{/order/{oid}(oid=${order.id})}">修改</a></td>
+					<td>
+					   <span th:if="${#lists.size(order.orderItems)==0}">
+					     <a th:href="@{/order/delete/{oid}(oid=${order.id})}">刪除</a>
+					   </span>
+					   <span style="color: red;" th:if="${#lists.size(order.orderItems)!=0}">
+					    尚有訂單不可刪除
+					   </span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

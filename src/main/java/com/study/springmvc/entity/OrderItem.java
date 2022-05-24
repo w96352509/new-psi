@@ -10,33 +10,41 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "orderItems")
+@Table(name = "order_items")
 public class OrderItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column
+	private Integer amount ;
+	
+	@JoinColumn(name = "order_id") // 外鍵
 	@ManyToOne
-	@JoinColumn(name = "order_id")
 	private Order order;
 	
+	@JoinColumn(name = "product_id") // 外鍵
 	@ManyToOne
-	@JoinColumn(name = "product_id")
 	private Product product;
-	
-	@Column
-	private Integer amount;
 	
 	@Column
 	private String remark;
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Integer getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Integer amount) {
+		this.amount = amount;
 	}
 
 	public Order getOrder() {
@@ -55,14 +63,6 @@ public class OrderItem {
 		this.product = product;
 	}
 
-	public Integer getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Integer amount) {
-		this.amount = amount;
-	}
-
 	public String getRemark() {
 		return remark;
 	}
@@ -70,7 +70,7 @@ public class OrderItem {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	
+
 	
 	
 }

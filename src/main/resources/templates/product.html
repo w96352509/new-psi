@@ -89,7 +89,16 @@
 		     <a th:href="@{/product/{id}(id=${product.id})}">修改</a>
 		    </td>
 		    <td>
-		     <a th:href="@{/product/delete/{id}(id=${product.id})}" onclick="del()">刪除</a>
+		     <span th:if="${#lists.size(product.purchaseItems)==0 and #lists.size(product.orderItems)==0}">
+		       <a th:href="@{/product/delete/{id}(id=${product.id})}" onclick="del()">刪除</a>
+		     </span>
+		     <span style="color: red" th:if="${#lists.size(product.purchaseItems)!=0 or #lists.size(product.orderItems)!=0}"
+						              th:utext="'採購單:'+
+						                        ${#lists.size(product.purchaseItems)}+
+						                        '<p/>'+
+						                        '訂購單:'+ 
+						                       ${#lists.size(product.orderItems)} ">
+			 </span>
 		    </td>
 		   </tr>
 		  </tbody>

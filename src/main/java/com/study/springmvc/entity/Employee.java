@@ -24,7 +24,7 @@ public class Employee {
 	private Long id;
 	
 	@Column
-	@Size(min = 2 , max = 50 , message = "employee.name.size")
+	@Size(min = 2 , max = 50 , message = "{employee.name.size}")
 	private String name;
 	
 	@Column

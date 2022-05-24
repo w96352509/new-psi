@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:include="./include/Head.html"></th:block>
+<title>商品動態庫存資料檢視</title>
+<style type="text/css">
+	.fieldError{color: red;}
+</style>
+</head>
+<body>
+	<div class="container my-2">
+		<div th:include="./include/header.html"></div>
+		<h1>商品動態庫存資料檢視</h1>
+		 
+		<table border="1" class="table table-striped table-responsive-md">
+		 <thead>
+		  <tr>
+		   <th>最高銷售商品</th>
+		   <th>最高銷售數量</th>
+		   <th>總賺</th>
+		  </tr>
+		 </thead>
+		 <tbody>
+		  <tr>
+		   <td style="color: red;" th:text="${maxamount.name}"></td>
+		   <td style="color: red;" th:text="${maxamount.getmax}"></td>
+		   <td style="color: red;" th:text= "${(maxamount.price * maxamount.amount2)-(maxamount.cost * maxamount.amount1) }"></td>
+		  </tr>
+		 </tbody>
+		</table>
+		
+		<table border="1" class="table table-striped table-responsive-md">
+			<thead>
+				<tr>
+					<th>序號</th><th>商品名稱</th><th>商品成本</th>
+					<th>商品售價</th><th>採購數量</th><th>銷售數量</th>
+					<th>庫存</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="inventory : ${inventories}">
+					<td th:text="${inventory.id}"></td>
+					<td th:text="${inventory.name}"></td>
+					<td th:text="${inventory.cost}"></td>
+					<td th:text="${inventory.price}"></td>
+					<td th:text="${inventory.amount1}"></td>
+					<td>
+					 <span th:if="${inventory.amount2==null}">0</span>
+					 <span th:text="${inventory.amount2}"></span>
+					</td>
+					<td> 
+					 <span th:if="${(inventory.amount2==null)}">
+					   <div th:text="${inventory.amount1 - 0}"></div>
+					 </span>
+					 <span th:if="${(inventory.amount2!=null)}">
+					   <div th:text="${inventory.amount1 - inventory.amount2}"></div>
+					 </span>
+					</td>  
+				</tr>
+			</tbody>
+		</table>
+		
+		
+	</div>
+</body>
+</html>
