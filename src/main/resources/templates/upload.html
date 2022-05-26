@@ -16,13 +16,14 @@
         <form class="container my-2" 
               enctype="multipart/form-data"
               th:method="post"
+              
               th:action="@{/upload/}">
             <fieldset>
                 <legend>Upload 圖片 (表單編碼:multipart/form-data)</legend>
                 
-                <input type="text" name="cname" placeholder="圖片名稱" value="" class="pure-input-rounded"><p /> 
+                <input type="text"  name="cname" placeholder="圖片名稱" value="" class="pure-input-rounded"><p /> 
                 <p />
-                <input type="file" name="upload_file" />
+                <input type="file"  name="upload_file" />
                 <p />
                 <button type="submit" class="pure-button pure-button-primary">上傳</button>
             </fieldset>
